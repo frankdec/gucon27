@@ -10,6 +10,7 @@ import              Hakyll.Core.Provider
 import              Hakyll.Core.Compiler
 import              Hakyll.Core.Compiler.Internal
 import qualified    GHC.IO.Encoding                 as Encoding
+import              Text.Pandoc.Options
 import              System.FilePath.Posix
 import              Talk
 
@@ -29,22 +30,23 @@ main = do
 
         match "templates/*" $ compile templateBodyCompiler
 
-        match ("**/*.markdown" .||. "*.markdown") $ do
+        match "*.markdown" $ do
             route cleanRoute
             compile $ mdCompiler defaultContext
 
-        match "talks/*.yaml" $ do
-            compile parseTalkCompiler 
+        match "talks/*.markdown" $ do
+            route cleanRoute
+            compile $ katexCompiler
+                >>= applyAsTemplate defaultContext
+                >>= loadAndApplyTemplate "templates/default.html" defaultContext
+                >>= relativizeUrls
 
         match "index.html" $ do
             route idRoute
             compile $ do
-                talks <- loadAll @Talk "talks/*.yaml"
-                let ctx = listField "talks" talkContext (pure talks) `mappend`
-                          defaultContext 
                 getResourceBody
-                    >>= applyAsTemplate ctx
-                    >>= loadAndApplyTemplate "templates/default.html" ctx
+                    >>= applyAsTemplate defaultContext
+                    >>= loadAndApplyTemplate "templates/default.html" defaultContext
                     >>= relativizeUrls
 
 --------------------------------------------------------------------------------
@@ -68,6 +70,12 @@ talkContext =
             , field "presenter" (pure . presenter . itemBody)
             , field "abstract" (pure . abstract . itemBody)
             ]
+
+katexCompiler :: Compiler (Item String)
+katexCompiler = pandocCompilerWith def writerOptions
+    where
+        writerOptions :: WriterOptions
+        writerOptions = defaultHakyllWriterOptions{ writerHTMLMathMethod = KaTeX "" }
 
 parseTalkCompiler :: Compiler (Item Talk)
 parseTalkCompiler = do
