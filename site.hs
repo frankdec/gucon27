@@ -1,10 +1,12 @@
---------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DeriveGeneric #-}
+import              GHC.Generics
 import              Data.Monoid (mappend)
 import              Data.Functor.Contravariant
 import qualified    Data.ByteString.Lazy            as BL
 import qualified    Data.Aeson                      as Aeson
+import              Data.Maybe (fromMaybe)
 import              Hakyll
 import              Hakyll.Core.Provider
 import              Hakyll.Core.Compiler
@@ -12,14 +14,27 @@ import              Hakyll.Core.Compiler.Internal
 import qualified    GHC.IO.Encoding                 as Encoding
 import              Text.Pandoc.Options
 import              System.FilePath.Posix
-import              Talk
 
 
---------------------------------------------------------------------------------
+myContext :: Context String
+myContext = 
+    let ctx = mconcat
+            [ field "presenter" (content "presenter")
+            , field "moderator" (content "moderator")
+            , field "startTime" (content "startTime")
+            , field "endTime" (content "endTime")
+            ] in
+    ctx `mappend` defaultContext
+    where
+        content :: String -> Item String -> Compiler String
+        content key item = do
+            metadata <- getMetadata (itemIdentifier item)
+            pure $ fromMaybe "not found" $ lookupString key metadata
+
 main :: IO ()
 main = do
     Encoding.setLocaleEncoding Encoding.utf8
-    hakyllWith defaultConfiguration $ do
+    hakyll $ do
         match "images/*" $ do
             route   idRoute
             compile copyFileCompiler
@@ -32,55 +47,52 @@ main = do
 
         match "*.markdown" $ do
             route cleanRoute
-            compile $ mdCompiler defaultContext
+            compile $ mdCompiler
 
         match "talks/*.markdown" $ do
             route cleanRoute
-            compile $ katexCompiler
-                >>= applyAsTemplate defaultContext
-                >>= loadAndApplyTemplate "templates/default.html" defaultContext
-                >>= relativizeUrls
+            compile $ talkCompiler
+
+        match "events.html" $ do
+            route cleanRoute
+            compile $ do
+               talks <- loadAll "talks/*.markdown"
+               let ctx = listField "talks" myContext (pure talks) `mappend` myContext
+               getResourceBody
+                    >>= applyAsTemplate ctx
+                    >>= loadAndApplyTemplate "templates/default.html" ctx
+                    >>= relativizeUrls
 
         match "index.html" $ do
             route idRoute
             compile $ do
                 getResourceBody
-                    >>= applyAsTemplate defaultContext
-                    >>= loadAndApplyTemplate "templates/default.html" defaultContext
+                    >>= applyAsTemplate myContext
+                    >>= loadAndApplyTemplate "templates/default.html" myContext
                     >>= relativizeUrls
 
---------------------------------------------------------------------------------
--- configuration :: Configuration
--- configuration = defaultConfiguration{ providerDirectory = "site" }
 
-mdCompiler :: Context String -> Compiler (Item String)
-mdCompiler ctx =
+
+mdCompiler :: Compiler (Item String)
+mdCompiler =
     pandocCompiler
-    >>= applyAsTemplate ctx
-    >>= loadAndApplyTemplate "templates/default.html" ctx
-    >>= relativizeUrls
+        >>= applyAsTemplate myContext
+        >>= loadAndApplyTemplate "templates/default.html" myContext
+        >>= relativizeUrls
+
+talkCompiler :: Compiler (Item String)
+talkCompiler =
+    katexCompiler
+        >>= loadAndApplyTemplate "templates/talk.html" myContext
+        >>= loadAndApplyTemplate "templates/default.html" myContext
+        >>= relativizeUrls
 
 cleanRoute :: Routes
 cleanRoute = customRoute $
     (\(p, _) -> p </> "index" <.> "html") . splitExtension . toFilePath
-
-talkContext :: Context Talk
-talkContext =
-    mconcat [ field "talkTitle" (pure . title . itemBody)
-            , field "presenter" (pure . presenter . itemBody)
-            , field "abstract" (pure . abstract . itemBody)
-            ]
 
 katexCompiler :: Compiler (Item String)
 katexCompiler = pandocCompilerWith def writerOptions
     where
         writerOptions :: WriterOptions
         writerOptions = defaultHakyllWriterOptions{ writerHTMLMathMethod = KaTeX "" }
-
-parseTalkCompiler :: Compiler (Item Talk)
-parseTalkCompiler = do
-    identifier  <- getUnderlying
-    provider    <- compilerProvider <$> compilerAsk
-    body        <- unsafeCompiler $ BL.readFile (resourceFilePath provider identifier)
-    talk        <- parseTalkM (BL.toStrict body)
-    makeItem talk
