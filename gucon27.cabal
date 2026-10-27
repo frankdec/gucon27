@@ -5,7 +5,7 @@ cabal-version:      >= 1.10
 
 executable site
   main-is:          site.hs
-  other-modules:    Talk
+  -- other-modules:    Talk
   build-depends:    base == 4.*
                   , hakyll == 4.16.*
                   , filepath == 1.5.*
