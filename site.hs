@@ -17,14 +17,13 @@ import              System.FilePath.Posix
 
 
 myContext :: Context String
-myContext = 
-    let ctx = mconcat
-            [ field "presenter" (content "presenter")
-            , field "moderator" (content "moderator")
-            , field "startTime" (content "startTime")
-            , field "endTime" (content "endTime")
-            ] in
-    ctx `mappend` defaultContext
+myContext = mconcat
+    [ field "presenter" (content "presenter")
+    , field "moderator" (content "moderator")
+    , field "startTime" (content "startTime")
+    , field "endTime" (content "endTime")
+    , defaultContext
+    ]
     where
         content :: String -> Item String -> Compiler String
         content key item = do
