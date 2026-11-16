@@ -3,4 +3,5 @@ title: About
 isAbout: true
 ---
 
-GUCon is an informal student conference.
+LOGO is an informal student conference.
+Funded by the University of Gothenburg.

@@ -1,9 +1,12 @@
 <ul>
     $for(talks)$
     <li>
-        $startTime$ - $endTime$
-        $title$
-        $presenter$
+        <a href=$url$>
+          $startTime$ - $endTime$
+          $title$
+          $presenter$
+        </a>
+        $body$
     </li>
     $endfor$
 </ul>

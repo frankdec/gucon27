@@ -55,7 +55,7 @@ main = do
         match "events.html" $ do
             route cleanRoute
             compile $ do
-               talks <- loadAll "talks/*.markdown"
+               talks <- loadAllSnapshots "talks/*.markdown" "content"
                let ctx = listField "talks" myContext (pure talks) `mappend` myContext
                getResourceBody
                     >>= applyAsTemplate ctx
@@ -82,6 +82,7 @@ mdCompiler =
 talkCompiler :: Compiler (Item String)
 talkCompiler =
     katexCompiler
+        >>= saveSnapshot "content"
         >>= loadAndApplyTemplate "templates/talk.html" myContext
         >>= loadAndApplyTemplate "templates/default.html" myContext
         >>= relativizeUrls
