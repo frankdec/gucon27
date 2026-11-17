@@ -1,12 +1,13 @@
-<ul>
-    $for(talks)$
-    <li>
-        <a href=$url$>
-          $startTime$ - $endTime$
-          $title$
-          $presenter$
-        </a>
-        $body$
-    </li>
-    $endfor$
-</ul>
+<div class="m-3">
+  $for(talks)$
+  <div class="card m-3">
+    <div class="card-body">
+      <h5 class="card-title">$title$</h5>
+      <h6 class="card-subtitle mb-2 text-body-secondary">$presenter$</h6>
+      <h6 class="card-subtitle mb-2 text-body-secondary">$startTime$ - $endTime$</h6>
+      <p class="card-text">$body$</p>
+      <a href=$url$ class="card-link">more</a>
+    </div>
+  </div>
+  $endfor$
+</div>

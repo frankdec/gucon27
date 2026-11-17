@@ -17,7 +17,7 @@ import System.FilePath.Posix
 import Text.Pandoc.Options
 
 conferenceName :: String
-conferenceName = "Conference name"
+conferenceName = "LOGO"
 
 conferenceNameYear :: String
 conferenceNameYear = conferenceName ++ " 2027"

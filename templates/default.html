@@ -1,44 +1,35 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html lang="en">
-    <head>
-        <link rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.css" 
-        integrity="sha384-WwGtaC6ywCHxA5cstpj/3+xIZvTez8dq2IcBQaXRkenHZ7FVVq1ZROtURwfbtTlG" 
-        crossorigin="anonymous">
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+  <head>
+    <title>$title$</title>
+    <meta charset="utf-8">
+    <meta content="IE edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <link rel="stylesheet" 
+          href="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.css" 
+          integrity="sha384-WwGtaC6ywCHxA5cstpj/3+xIZvTez8dq2IcBQaXRkenHZ7FVVq1ZROtURwfbtTlG" 
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-yEPZ7jP9S0QKiUQ0m3jjsO4ProIW7wvR9gXkI7JOGa2XVsw53Yke2bsdkBbjmmiX" crossorigin="anonymous">
     <script 
-        defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js" 
-        integrity="sha384-a1WQdjRj162i159OYq041X6I4K8NenkrI09LlPmiHg0YOb7CR+wJOraXwK9abpnE" 
-        crossorigin="anonymous"></script>
-    <!-- To automatically render math in text elements, include the auto-render extension: -->
+                                                                                                                                                                                              defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js" 
+                                                                                                                                                                                                    integrity="sha384-a1WQdjRj162i159OYq041X6I4K8NenkrI09LlPmiHg0YOb7CR+wJOraXwK9abpnE" 
+                                                                                                                                                                                                    crossorigin="anonymous"></script>
     <script 
-        defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/contrib/auto-render.min.js" 
-        integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" 
-        crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
-       <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>$title$</title>
-        <link rel="stylesheet" href="/css/default.css" />
-    </head>
-    <body>
-        <header>
-            <div class="logo">
-                <a href="/">$conferenceNameYear$</a>
-            </div>
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/rsvp">RSVP</a>
-                <a href="/events">Events</a>
-            </nav>
-        </header>
-
-        <main role="main">
-            $body$
-        </main>
-
-        <footer>
-          Encountered a problem? Open an issue here: <a href="https://www.youtube.com/watch?v=815kbvmNWNM">github</a>
-        </footer>
-    </body>
+                                                                                                                                                                                                    defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/contrib/auto-render.min.js" 
+                                                                                                                                                                                                          integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" 
+                                                                                                                                                                                                          crossorigin="anonymous"
+                                                                                                                                                                                                          onload="renderMathInElement(document.body);"></script>
+  </head>
+  <body>
+    <div class="container">
+      $partial("templates/nav.html")$
+      <div class="m-3">
+        $body$
+      </div>
+      $partial("templates/footer.html")$
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.bundle.min.js" integrity="sha384-WyOxWvTyr1QaMPfiPJSv76iReVthorl5uWlFtZPyK0IEB0hGzo9y5Bp9mYanr8Bu" crossorigin="anonymous"></script>
+  </body> 
 </html>
