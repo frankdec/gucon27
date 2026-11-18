@@ -8,13 +8,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
+            <a $if(isHome)$class="nav-link active" aria-current="page"$else$class="nav-link"$endif$ href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/about">About</a>
+            <a $if(isAbout)$class="nav-link active" aria-current="page"$else$class="nav-link"$endif$ href="/about">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/rsvp">RSVP</a>
+            <a $if(isRSVP)$class="nav-link active" aria-current="page"$else$class="nav-link"$endif$ href="/rsvp">RSVP</a>
           </li> 
         </ul> 
       </div>

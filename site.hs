@@ -1,12 +1,16 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeApplications #-}
 
+import Control.Monad (liftM)
 import qualified Data.Aeson as Aeson
 import qualified Data.ByteString.Lazy as BL
 import Data.Functor.Contravariant
 import Data.Maybe (fromMaybe)
 import Data.Monoid (mappend)
+import Data.List (sortBy)
+import Data.Ord (comparing)
 import GHC.Generics
 import qualified GHC.IO.Encoding as Encoding
 import Hakyll
@@ -17,7 +21,7 @@ import System.FilePath.Posix
 import Text.Pandoc.Options
 
 conferenceName :: String
-conferenceName = "LOGO"
+conferenceName = "Logos"
 
 conferenceNameYear :: String
 conferenceNameYear = conferenceName ++ " 2027"
@@ -41,8 +45,9 @@ myContext' =
 
 myContext :: Context String
 myContext =
-  let talks = loadAllSnapshots "talks/*.markdown" "content"
-   in listField "talks" myContext' talks
+  let events = loadAllSnapshots "events/*.markdown" "content"
+        >>= byStartTime
+   in listField "events" myContext' events
         `mappend` myContext'
 
 main :: IO ()
@@ -63,11 +68,11 @@ main = do
       route cleanRoute
       compile $ mdCompiler
 
-    match "talks/*.markdown" $ do
+    match "events/*.markdown" $ do
       route cleanRoute
-      compile $ talkCompiler
+      compile $ eventCompiler
 
-    match ("events.html" .||. "about.html") $ do
+    match "about.html" $ do
       route cleanRoute
       compile $ do
         getResourceBody
@@ -94,13 +99,24 @@ mdCompiler =
     >>= loadAndApplyTemplate "templates/default.html" myContext
     >>= relativizeUrls
 
-talkCompiler :: Compiler (Item String)
-talkCompiler =
+eventCompiler :: Compiler (Item String)
+eventCompiler =
   katexCompiler
     >>= saveSnapshot "content"
     >>= loadAndApplyTemplate "templates/talk.html" myContext
     >>= loadAndApplyTemplate "templates/default.html" myContext
     >>= relativizeUrls
+
+
+getStartTime :: Identifier -> Compiler String
+getStartTime id = getMetadataField' id "startTime" 
+
+byStartTime :: [Item a] -> Compiler [Item a]
+byStartTime = sortByM $ getStartTime . itemIdentifier
+  where
+    sortByM :: (Monad m, Ord k) => (a -> m k) -> [a] -> m [a]
+    sortByM f xs = liftM (map fst . sortBy (comparing snd)) $
+                   mapM (\x -> liftM (x,) (f x)) xs
 
 cleanRoute :: Routes
 cleanRoute =
