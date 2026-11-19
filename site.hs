@@ -103,7 +103,7 @@ eventCompiler :: Compiler (Item String)
 eventCompiler =
   katexCompiler
     >>= saveSnapshot "content"
-    >>= loadAndApplyTemplate "templates/talk.html" myContext
+    >>= loadAndApplyTemplate "templates/event.html" myContext
     >>= loadAndApplyTemplate "templates/default.html" myContext
     >>= relativizeUrls
 

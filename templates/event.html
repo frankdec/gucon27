@@ -1,0 +1,14 @@
+<article>
+  <h1>$title$</h1>
+  $if(isBreak)$
+  $else$
+  <h6 class="text-body-secondary">$presenter$</h6>
+  $endif$
+  <h6 class="text-body-secondary">$startTime$ - $endTime$</h6>
+  $if(isTalk)$
+  <h3>Abstract</h3>
+  $else$
+  <h3>Description</h3>
+  $endif$
+  <p>$body$</p>
+</article>

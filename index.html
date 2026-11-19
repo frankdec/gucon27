@@ -3,32 +3,9 @@ isHome: true
 ---
 <!-- <img src="/images/haskell-logo.png" style="float: right; margin: 10px;" /> -->
 
-<p>Welcome to $conferenceNameYear$.</p>
-<p>To attend, please <a href="rsvp">RSVP</a>.</p>
+<p>
+Welcome to $conferenceNameYear$.
+To attend, please <a href="rsvp">RSVP</a>.
+</p>
 
-<div class="table-responsive">
-<table class="table table-hover align-middle caption-top">
-  <caption class="text-center"><h3>Conference schedule</h3></caption>
-  <thead>
-    <tr>
-      <th>Time</th>
-      <th>Title</th>
-      <th>Presenter</th>
-    </tr>
-  </thead>
-  $for(events)$
-  $if(isTalk)$
-  <tr>
-    <td>$startTime$ - $endTime$</td>
-    <td><a href=$url$>$title$</a></td>
-    <td>$presenter$</td>
-  </tr>
-  $else$
-  <tr class="table-secondary">
-    <td>$startTime$ - $endTime$</td>
-    <td class="text-center" colspan="2">$title$</td>
-  </tr>
-  $endif$
-  $endfor$
-</table>
-</div>
+$partial("templates/schedule.html")$
